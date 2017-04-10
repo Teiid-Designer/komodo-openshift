@@ -121,7 +121,13 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
+
+					<!-- Need to use the same manifest since this is excluded by default -->
+					<archive>
+						<manifestFile>${project.build.directory}/war/work/org.komodo/komodo-rest/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
 				</configuration>
+
 			</plugin>
 		</plugins>
 	</build>
