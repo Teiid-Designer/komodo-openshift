@@ -39,80 +39,8 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<profiles>
-		<profile>
-			<id>openshift</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpack-teiid</id>
-								<phase>process-sources</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>org.jboss.teiid</groupId>
-											<artifactId>teiid</artifactId>
-											<version>${teiid.version}</version>
-											<classifier>wildfly-dist</classifier>
-											<type>zip</type>
-											<overWrite>true</overWrite>
-											<outputDirectory>${jboss.home}</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<!-- Adds credentials and ssl support to wildfly server -->
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-resources-credentials</id>
-								<phase>process-sources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<overwrite>true</overwrite>
-									<outputDirectory>${jboss.home}/standalone/configuration</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/resources/credentials</directory>
-											<includes>
-												<include>*.properties</include>
-											</includes>
-											<filtering>true</filtering>
-										</resource>
-										<resource>
-											<targetPath>${jboss.home}/standalone/configuration/ssl</targetPath>
-											<directory>src/main/resources/ssl</directory>
-										</resource>
-										<resource>
-											<directory>src/main/resources/standalone-teiid/</directory>
-											<includes>
-												<include>standalone.xml</include>
-											</includes>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 	<modules>
+		<module>teiid-os</module>
 		<module>vdb-builder-os</module>
 		<module>ds-builder-os</module>
 	</modules>
