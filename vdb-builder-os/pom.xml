@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.teiid</groupId>
+		<artifactId>komodo-openshift</artifactId>
+		<version>0.1.Final</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>vdb-builder-os</artifactId>
+
+	<packaging>war</packaging>
+	<name>vdb-builder openshift</name>
+
+	<properties>
+		<war.name>vdb-builder</war.name>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.komodo</groupId>
+			<artifactId>komodo-rest</artifactId>
+			<type>war</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${war.name}</finalName>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+
+					<!-- Need to use the same manifest since this is excluded by default -->
+					<archive>
+						<manifestFile>${project.build.directory}/war/work/org.komodo/komodo-rest/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<!-- openshift only picks war archives from the root target directory so copy the war up -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-war-to-root</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/../target</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}</directory>
+									<include>${war.name}.war</include>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

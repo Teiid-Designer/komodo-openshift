@@ -8,14 +8,16 @@
 		<version>6.0.1.Final</version>
 	</parent>
 
+	<groupId>org.teiid</groupId>
 	<artifactId>komodo-openshift</artifactId>
+	<version>0.1.Final</version>
+	<packaging>pom</packaging>
 
-	<packaging>war</packaging>
-	<name>Komodo Openshift War</name>
+	<name>Komodo Openshift War Archives</name>
 
 	<properties>
-		<war.name>vdb-builder</war.name>
 		<version.komodo-rest>0.0.4-SNAPSHOT</version.komodo-rest>
+		<version.vdb-bench>0.1-SNAPSHOT</version.vdb-bench>
 		<jboss.home>/wildfly</jboss.home>
 		<teiid.version>9.1.1</teiid.version>
 	</properties>
@@ -28,17 +30,14 @@
 				<version>${version.komodo-rest}</version>
 				<type>war</type>
 			</dependency>
+			<dependency>
+				<groupId>org.teiid</groupId>
+				<artifactId>vdb-bench-war</artifactId>
+				<version>${version.vdb-bench}</version>
+				<type>war</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.komodo</groupId>
-			<artifactId>komodo-rest</artifactId>
-			<type>war</type>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
 
 	<profiles>
 		<profile>
@@ -113,22 +112,9 @@
 		</profile>
 	</profiles>
 
-	<build>
-		<finalName>${war.name}</finalName>
+	<modules>
+		<module>vdb-builder-os</module>
+		<module>ds-builder-os</module>
+	</modules>
 
-		<plugins>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-
-					<!-- Need to use the same manifest since this is excluded by default -->
-					<archive>
-						<manifestFile>${project.build.directory}/war/work/org.komodo/komodo-rest/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-
-			</plugin>
-		</plugins>
-	</build>
 </project>
