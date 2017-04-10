@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
+	<parent>
 		<groupId>org.jboss.integration-platform</groupId>
 		<artifactId>jboss-integration-platform-parent</artifactId>
 		<version>6.0.1.Final</version>
@@ -13,69 +14,115 @@
 	<name>Komodo Openshift War</name>
 
 	<properties>
-        <war.name>vdb-builder</war.name>
-        <version.komodo-rest>0.0.4-SNAPSHOT</version.komodo-rest>
-        <jboss.home>/wildfly</jboss.home>
-        <teiid.version>9.1.1</teiid.version>
+		<war.name>vdb-builder</war.name>
+		<version.komodo-rest>0.0.4-SNAPSHOT</version.komodo-rest>
+		<jboss.home>/wildfly</jboss.home>
+		<teiid.version>9.1.1</teiid.version>
 	</properties>
 
 	<dependencyManagement>
-        <dependencies>
+		<dependencies>
 			<dependency>
 				<groupId>org.komodo</groupId>
 				<artifactId>komodo-rest</artifactId>
 				<version>${version.komodo-rest}</version>
-                <type>war</type>
+				<type>war</type>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
-            <groupId>org.komodo</groupId>
-            <artifactId>komodo-rest</artifactId>
-            <type>war</type>
-            <scope>compile</scope>
+			<groupId>org.komodo</groupId>
+			<artifactId>komodo-rest</artifactId>
+			<type>war</type>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
-    <profiles>
-        <profile>
-            <id>openshift</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-teiid</id>
-                                <phase>process-sources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jboss.teiid</groupId>
-                                            <artifactId>teiid</artifactId>
-                                            <version>${teiid.version}</version>
-                                            <classifier>wildfly-dist</classifier>
-                                            <type>zip</type>
-                                            <overWrite>true</overWrite>
-                                            <outputDirectory>${jboss.home}</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+	<profiles>
+		<profile>
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack-teiid</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>org.jboss.teiid</groupId>
+											<artifactId>teiid</artifactId>
+											<version>${teiid.version}</version>
+											<classifier>wildfly-dist</classifier>
+											<type>zip</type>
+											<overWrite>true</overWrite>
+											<outputDirectory>${jboss.home}</outputDirectory>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-	<build> 
-        <finalName>${war.name}</finalName>
-    </build>
+					<!-- Adds credentials and ssl support to wildfly server -->
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-resources-credentials</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<overwrite>true</overwrite>
+									<outputDirectory>${jboss.home}/standalone/configuration</outputDirectory>
+									<resources>
+										<resource>
+											<directory>src/main/resources/credentials</directory>
+											<includes>
+												<include>*.properties</include>
+											</includes>
+											<filtering>true</filtering>
+										</resource>
+										<resource>
+											<targetPath>${jboss.home}/standalone/configuration/ssl</targetPath>
+											<directory>src/main/resources/ssl</directory>
+										</resource>
+										<resource>
+											<directory>src/main/resources/standalone-teiid/</directory>
+											<includes>
+												<include>standalone.xml</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+		<finalName>${war.name}</finalName>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
