@@ -76,6 +76,13 @@
 												<include>standalone.xml</include>
 											</includes>
 										</resource>
+										<resource>
+											<targetPath>${jboss.home}/standalone/deployments</targetPath>
+											<directory>src/main/resources/drivers</directory>
+											<includes>
+												<include>*.jar</include>
+											</includes>
+										</resource>
 									</resources>
 								</configuration>
 							</execution>
