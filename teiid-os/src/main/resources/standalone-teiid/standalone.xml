@@ -154,9 +154,10 @@
                     </security>
                 </datasource>
                 <!-- The mysql.enabled variable is replaced with MYSQL_ENABLED by a sed command in wf/bin/standalone.conf
-                  -- see https://github.com/openshift-s2i/s2i-wildfly/blob/master/10.1/contrib/wfbin/standalone.conf#L137
-                  --
-                  -- Variables starting with OPENSHIFT prefix are magically replaced by OS on startup of the container with the correct values
+                     see https://github.com/openshift-s2i/s2i-wildfly/blob/master/10.1/contrib/wfbin/standalone.conf#L137
+                  -->
+                <!--
+                     Variables starting with OPENSHIFT prefix are magically replaced by OS on startup of the container with the correct values
                   -->
                 <datasource jndi-name="java:/${env.OPENSHIFT_MYSQL_DATASOURCE}" pool-name="${env.OPENSHIFT_MYSQL_DATASOURCE}" enabled="${mysql.enabled}">
                     <connection-url>jdbc:mysql://${env.OPENSHIFT_MYSQL_DB_HOST}:${env.OPENSHIFT_MYSQL_DB_PORT}/${env.OPENSHIFT_MYSQL_DB_NAME}</connection-url>
