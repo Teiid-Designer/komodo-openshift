@@ -7,14 +7,14 @@ items:
       openshift.io/generated-by: OpenShiftWebConsole
     creationTimestamp: null
     labels:
-      app: komodo-os2
-    name: komodo-os2
+      app: dsb-openshift
+    name: dsb-openshift
   spec:
     nodeSelector: null
     output:
       to:
         kind: ImageStreamTag
-        name: komodo-os2:latest
+        name: dsb-openshift:latest
     postCommit: {}
     resources: {}
     runPolicy: Serial
@@ -46,16 +46,16 @@ items:
   kind: Build
   metadata:
     annotations:
-      openshift.io/build-config.name: komodo-os2
-      openshift.io/build.number: "11"
-      openshift.io/build.pod-name: komodo-os2-11-build
+      openshift.io/build-config.name: dsb-openshift
+      openshift.io/build.number: "1"
+      openshift.io/build.pod-name: dsb-openshift-1-build
     creationTimestamp: null
     labels:
-      app: komodo-os2
-      buildconfig: komodo-os2
-      openshift.io/build-config.name: komodo-os2
+      app: dsb-openshift
+      buildconfig: dsb-openshift
+      openshift.io/build-config.name: dsb-openshift
       openshift.io/build.start-policy: Serial
-    name: komodo-os2-11
+    name: dsb-openshift-1
   spec:
     nodeSelector: null
     output:
@@ -63,7 +63,7 @@ items:
         name: builder-dockercfg-8el0b
       to:
         kind: ImageStreamTag
-        name: komodo-os2:latest
+        name: dsb-openshift:latest
     postCommit: {}
     resources: {}
     revision:
@@ -93,7 +93,7 @@ items:
     - message: Manually triggered
   status:
     config:
-      name: komodo-os2
+      name: dsb-openshift
     phase: New
 - apiVersion: v1
   kind: ImageStream
@@ -103,14 +103,14 @@ items:
     creationTimestamp: null
     generation: 1
     labels:
-      app: komodo-os2
-    name: komodo-os2
+      app: dsb-openshift
+    name: dsb-openshift
   spec:
     tags:
     - annotations: null
       from:
         kind: DockerImage
-        name: 172.30.47.227:5000/dsb/komodo-os2:latest
+        name: 172.30.47.227:5000/dsb/dsb-openshift:latest
       generation: null
       importPolicy: {}
       name: latest
@@ -147,12 +147,12 @@ items:
     creationTimestamp: null
     generation: 1
     labels:
-      app: komodo-os2
-    name: komodo-os2
+      app: dsb-openshift
+    name: dsb-openshift
   spec:
     replicas: 1
     selector:
-      deploymentconfig: komodo-os2
+      deploymentconfig: dsb-openshift
     strategy:
       resources: {}
       rollingParams:
@@ -166,8 +166,8 @@ items:
       metadata:
         creationTimestamp: null
         labels:
-          app: komodo-os2
-          deploymentconfig: komodo-os2
+          app: dsb-openshift
+          deploymentconfig: dsb-openshift
       spec:
         containers:
         - env:
@@ -183,9 +183,9 @@ items:
             value: admin
           - name: MYSQL_PASSWORD
             value: admin
-          image: 172.30.47.227:5000/dsb/komodo-os2@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef
+          image: 172.30.47.227:5000/dsb/dsb-openshift@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef
           imagePullPolicy: Always
-          name: komodo-os2
+          name: dsb-openshift
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -202,10 +202,10 @@ items:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - komodo-os2
+        - dsb-openshift
         from:
           kind: ImageStreamTag
-          name: komodo-os2:latest
+          name: dsb-openshift:latest
           namespace: dsb
       type: ImageChange
     - type: ConfigChange
@@ -298,36 +298,36 @@ items:
   kind: ReplicationController
   metadata:
     annotations:
-      openshift.io/deployer-pod.name: komodo-os2-15-deploy
-      openshift.io/deployment-config.latest-version: "15"
-      openshift.io/deployment-config.name: komodo-os2
+      openshift.io/deployer-pod.name: dsb-openshift-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: dsb-openshift
       openshift.io/deployment.phase: Complete
       openshift.io/deployment.replicas: "1"
       openshift.io/deployment.status-reason: image change
       openshift.io/encoded-deployment-config: |
-        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"komodo-os2","namespace":"dsb","selfLink":"/oapi/v1/namespaces/dsb/deploymentconfigs/komodo-os2","uid":"eb23837c-1f85-11e7-a825-0ebeb1070c7f","resourceVersion":"1139302851","generation":30,"creationTimestamp":"2017-04-12T13:42:49Z","labels":{"app":"komodo-os2"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{}},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["komodo-os2"],"from":{"kind":"ImageStreamTag","namespace":"dsb","name":"komodo-os2:latest"},"lastTriggeredImage":"172.30.47.227:5000/dsb/komodo-os2@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentconfig":"komodo-os2"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"komodo-os2","deploymentconfig":"komodo-os2"}},"spec":{"containers":[{"name":"komodo-os2","image":"172.30.47.227:5000/dsb/komodo-os2@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"MYSQL_DB_ENABLED","value":"true"},{"name":"MYSQL_SERVICE_HOST","value":"172.30.81.235"},{"name":"MYSQL_SERVICE_PORT","value":"3306"},{"name":"MYSQL_DATABASE","value":"usstates"},{"name":"MYSQL_USER","value":"admin"},{"name":"MYSQL_PASSWORD","value":"admin"}],"resources":{"limits":{"memory":"1Gi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{}}}},"status":{"latestVersion":15,"observedGeneration":30,"unavailableReplicas":1,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"ImageStreamTag","namespace":"dsb","name":"komodo-os2:latest"}}}]},"conditions":[{"type":"Progressing","status":"False","lastTransitionTime":"2017-04-20T10:44:52Z","reason":"ProgressDeadlineExceeded","message":"Replication controller \"komodo-os2-15\" has failed progressing"},{"type":"Available","status":"False","lastTransitionTime":"2017-04-20T10:46:08Z","message":"Deployment config does not have minimum availability."}]}}
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"dsb-openshift","namespace":"dsb","selfLink":"/oapi/v1/namespaces/dsb/deploymentconfigs/dsb-openshift","uid":"eb23837c-1f85-11e7-a825-0ebeb1070c7f","resourceVersion":"1139302851","generation":30,"creationTimestamp":"2017-04-12T13:42:49Z","labels":{"app":"dsb-openshift"},"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{}},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["dsb-openshift"],"from":{"kind":"ImageStreamTag","namespace":"dsb","name":"dsb-openshift:latest"},"lastTriggeredImage":"172.30.47.227:5000/dsb/dsb-openshift@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef"}},{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"deploymentconfig":"dsb-openshift"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"dsb-openshift","deploymentconfig":"dsb-openshift"}},"spec":{"containers":[{"name":"dsb-openshift","image":"172.30.47.227:5000/dsb/dsb-openshift@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"MYSQL_DB_ENABLED","value":"true"},{"name":"MYSQL_SERVICE_HOST","value":"172.30.81.235"},{"name":"MYSQL_SERVICE_PORT","value":"3306"},{"name":"MYSQL_DATABASE","value":"usstates"},{"name":"MYSQL_USER","value":"admin"},{"name":"MYSQL_PASSWORD","value":"admin"}],"resources":{"limits":{"memory":"1Gi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{}}}},"status":{"latestVersion":15,"observedGeneration":30,"unavailableReplicas":1,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"ImageStreamTag","namespace":"dsb","name":"dsb-openshift:latest"}}}]},"conditions":[{"type":"Progressing","status":"False","lastTransitionTime":"2017-04-20T10:44:52Z","reason":"ProgressDeadlineExceeded","message":"Replication controller \"dsb-openshift-1\" has failed progressing"},{"type":"Available","status":"False","lastTransitionTime":"2017-04-20T10:46:08Z","message":"Deployment config does not have minimum availability."}]}}
     creationTimestamp: null
     generation: 1
     labels:
-      app: komodo-os2
-      openshift.io/deployment-config.name: komodo-os2
-    name: komodo-os2-15
+      app: dsb-openshift
+      openshift.io/deployment-config.name: dsb-openshift
+    name: dsb-openshift-1
   spec:
     replicas: 1
     selector:
-      deployment: komodo-os2-15
-      deploymentconfig: komodo-os2
+      deployment: dsb-openshift-1
+      deploymentconfig: dsb-openshift
     template:
       metadata:
         annotations:
-          openshift.io/deployment-config.latest-version: "15"
-          openshift.io/deployment-config.name: komodo-os2
-          openshift.io/deployment.name: komodo-os2-15
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: dsb-openshift
+          openshift.io/deployment.name: dsb-openshift-1
         creationTimestamp: null
         labels:
-          app: komodo-os2
-          deployment: komodo-os2-15
-          deploymentconfig: komodo-os2
+          app: dsb-openshift
+          deployment: dsb-openshift-15
+          deploymentconfig: dsb-openshift
       spec:
         containers:
         - env:
@@ -343,9 +343,9 @@ items:
             value: admin
           - name: MYSQL_PASSWORD
             value: admin
-          image: 172.30.47.227:5000/dsb/komodo-os2@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef
+          image: 172.30.47.227:5000/dsb/dsb-openshift@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef
           imagePullPolicy: Always
-          name: komodo-os2
+          name: dsb-openshift
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -363,8 +363,8 @@ items:
   kind: ReplicationController
   metadata:
     annotations:
-      openshift.io/deployer-pod.name: mysql-openshift-9-deploy
-      openshift.io/deployment-config.latest-version: "9"
+      openshift.io/deployer-pod.name: mysql-openshift-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
       openshift.io/deployment-config.name: mysql-openshift
       openshift.io/deployment.phase: Complete
       openshift.io/deployment.replicas: ""
@@ -376,24 +376,24 @@ items:
     labels:
       app: mysql-openshift
       openshift.io/deployment-config.name: mysql-openshift
-    name: mysql-openshift-9
+    name: mysql-openshift-1
   spec:
     replicas: 1
     selector:
       app: mysql-openshift
-      deployment: mysql-openshift-9
+      deployment: mysql-openshift-1
       deploymentconfig: mysql-openshift
     template:
       metadata:
         annotations:
-          openshift.io/deployment-config.latest-version: "9"
+          openshift.io/deployment-config.latest-version: "1"
           openshift.io/deployment-config.name: mysql-openshift
-          openshift.io/deployment.name: mysql-openshift-9
+          openshift.io/deployment.name: mysql-openshift-1
           openshift.io/generated-by: OpenShiftWebConsole
         creationTimestamp: null
         labels:
           app: mysql-openshift
-          deployment: mysql-openshift-9
+          deployment: mysql-openshift-1
           deploymentconfig: mysql-openshift
       spec:
         containers:
@@ -443,15 +443,15 @@ items:
       openshift.io/host.generated: "true"
     creationTimestamp: null
     labels:
-      app: komodo-os2
-    name: komodo-os2-31000
+      app: dsb-openshift
+    name: dsb-openshift-31000
   spec:
-    host: komodo-os2-31000-dsb.44fs.preview.openshiftapps.com
+    host: dsb-openshift-31000-dsb.44fs.preview.openshiftapps.com
     port:
       targetPort: 31000-tcp
     to:
       kind: Service
-      name: komodo-os2
+      name: dsb-openshift
       weight: 100
     wildcardPolicy: None
   status:
@@ -460,7 +460,7 @@ items:
       - lastTransitionTime: 2017-04-12T14:05:40Z
         status: "True"
         type: Admitted
-      host: komodo-os2-31000-dsb.44fs.preview.openshiftapps.com
+      host: dsb-openshift-31000-dsb.44fs.preview.openshiftapps.com
       routerName: router
       wildcardPolicy: None
 - apiVersion: v1
@@ -470,15 +470,15 @@ items:
       openshift.io/host.generated: "true"
     creationTimestamp: null
     labels:
-      app: komodo-os2
-    name: komodo-os2-8443
+      app: dsb-openshift
+    name: dsb-openshift-8443
   spec:
-    host: komodo-os2-8443-dsb.44fs.preview.openshiftapps.com
+    host: dsb-openshift-8443-dsb.44fs.preview.openshiftapps.com
     port:
       targetPort: 8443-tcp
     to:
       kind: Service
-      name: komodo-os2
+      name: dsb-openshift
       weight: 100
     wildcardPolicy: None
   status:
@@ -487,7 +487,7 @@ items:
       - lastTransitionTime: 2017-04-12T14:06:17Z
         status: "True"
         type: Admitted
-      host: komodo-os2-8443-dsb.44fs.preview.openshiftapps.com
+      host: dsb-openshift-8443-dsb.44fs.preview.openshiftapps.com
       routerName: router
       wildcardPolicy: None
 - apiVersion: v1
@@ -497,15 +497,15 @@ items:
       openshift.io/host.generated: "true"
     creationTimestamp: null
     labels:
-      app: komodo-os2
-    name: komodo-os2-9990
+      app: dsb-openshift
+    name: dsb-openshift-9990
   spec:
-    host: komodo-os2-9990-dsb.44fs.preview.openshiftapps.com
+    host: dsb-openshift-9990-dsb.44fs.preview.openshiftapps.com
     port:
       targetPort: 9990-tcp
     to:
       kind: Service
-      name: komodo-os2
+      name: dsb-openshift
       weight: 100
     wildcardPolicy: None
   status:
@@ -514,7 +514,7 @@ items:
       - lastTransitionTime: 2017-04-12T14:05:58Z
         status: "True"
         type: Admitted
-      host: komodo-os2-9990-dsb.44fs.preview.openshiftapps.com
+      host: dsb-openshift-9990-dsb.44fs.preview.openshiftapps.com
       routerName: router
       wildcardPolicy: None
 - apiVersion: v1
@@ -551,8 +551,8 @@ items:
       openshift.io/generated-by: OpenShiftWebConsole
     creationTimestamp: null
     labels:
-      app: komodo-os2
-    name: komodo-os2
+      app: dsb-openshift
+    name: dsb-openshift
   spec:
     ports:
     - name: 8080-tcp
@@ -572,7 +572,7 @@ items:
       protocol: TCP
       targetPort: 31000
     selector:
-      deploymentconfig: komodo-os2
+      deploymentconfig: dsb-openshift
     sessionAffinity: None
     type: ClusterIP
   status:
@@ -603,19 +603,19 @@ items:
   metadata:
     annotations:
       kubernetes.io/created-by: |
-        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"dsb","name":"komodo-os2-15","uid":"90b0516e-25b6-11e7-b3b6-0e3d364e19a5","apiVersion":"v1","resourceVersion":"1139303274"}}
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"dsb","name":"dsb-openshift-1","uid":"90b0516e-25b6-11e7-b3b6-0e3d364e19a5","apiVersion":"v1","resourceVersion":"1139303274"}}
       kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
-        komodo-os2; cpu limit for container komodo-os2'
-      openshift.io/deployment-config.latest-version: "15"
-      openshift.io/deployment-config.name: komodo-os2
-      openshift.io/deployment.name: komodo-os2-15
+        dsb-openshift; cpu limit for container dsb-openshift'
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: dsb-openshift
+      openshift.io/deployment.name: dsb-openshift-1
       openshift.io/scc: restricted
     creationTimestamp: null
-    generateName: komodo-os2-15-
+    generateName: dsb-openshift-1-
     labels:
-      app: komodo-os2
-      deployment: komodo-os2-15
-      deploymentconfig: komodo-os2
+      app: dsb-openshift
+      deployment: dsb-openshift-1
+      deploymentconfig: dsb-openshift
   spec:
     containers:
     - env:
@@ -631,9 +631,9 @@ items:
         value: admin
       - name: MYSQL_PASSWORD
         value: admin
-      image: 172.30.47.227:5000/dsb/komodo-os2@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef
+      image: 172.30.47.227:5000/dsb/dsb-openshift@sha256:9ff62cd9a24dd28cd44117722fae6c0469dc067d40670873930ed2d0579aebef
       imagePullPolicy: Always
-      name: komodo-os2
+      name: dsb-openshift
       ports:
       - containerPort: 8080
         protocol: TCP
@@ -688,19 +688,19 @@ items:
   metadata:
     annotations:
       kubernetes.io/created-by: |
-        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"dsb","name":"mysql-openshift-9","uid":"b7e17587-25b6-11e7-b3b6-0e3d364e19a5","apiVersion":"v1","resourceVersion":"1139306349"}}
+        {"kind":"SerializedReference","apiVersion":"v1","reference":{"kind":"ReplicationController","namespace":"dsb","name":"mysql-openshift-1","uid":"b7e17587-25b6-11e7-b3b6-0e3d364e19a5","apiVersion":"v1","resourceVersion":"1139306349"}}
       kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
         mysql-openshift; cpu limit for container mysql-openshift'
-      openshift.io/deployment-config.latest-version: "9"
+      openshift.io/deployment-config.latest-version: "1"
       openshift.io/deployment-config.name: mysql-openshift
-      openshift.io/deployment.name: mysql-openshift-9
+      openshift.io/deployment.name: mysql-openshift-1
       openshift.io/generated-by: OpenShiftWebConsole
       openshift.io/scc: restricted
     creationTimestamp: null
-    generateName: mysql-openshift-9-
+    generateName: mysql-openshift-1-
     labels:
       app: mysql-openshift
-      deployment: mysql-openshift-9
+      deployment: mysql-openshift-1
       deploymentconfig: mysql-openshift
   spec:
     containers:
