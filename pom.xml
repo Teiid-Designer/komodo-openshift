@@ -18,7 +18,7 @@
 	<properties>
 		<version.komodo-rest>0.0.4-SNAPSHOT</version.komodo-rest>
 		<version.vdb-bench>0.1-SNAPSHOT</version.vdb-bench>
-		<jboss.home>/wildfly</jboss.home>
+		<jboss.home>/opt/eap</jboss.home>
 		<teiid.version>9.1.1</teiid.version>
 	</properties>
 
