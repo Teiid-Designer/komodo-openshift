@@ -41,8 +41,6 @@
 
 	<modules>
 		<module>teiid-os</module>
-		<module>vdb-builder-os</module>
-		<module>ds-builder-os</module>
 	</modules>
 
 </project>
