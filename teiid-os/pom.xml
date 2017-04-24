@@ -34,7 +34,7 @@
 											<groupId>org.jboss.teiid</groupId>
 											<artifactId>teiid</artifactId>
 											<version>${teiid.version}</version>
-											<classifier>wildfly-dist</classifier>
+											<classifier>jboss-dist</classifier>
 											<type>zip</type>
 											<overWrite>true</overWrite>
 											<outputDirectory>${jboss.home}</outputDirectory>

@@ -19,7 +19,7 @@
 		<version.komodo-rest>0.0.4-SNAPSHOT</version.komodo-rest>
 		<version.vdb-bench>0.1-SNAPSHOT</version.vdb-bench>
 		<jboss.home>/opt/eap</jboss.home>
-		<teiid.version>9.1.1</teiid.version>
+		<teiid.version>8.12.4</teiid.version>
 	</properties>
 
 	<dependencyManagement>
