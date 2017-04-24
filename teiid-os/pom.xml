@@ -71,9 +71,17 @@
 											<directory>src/main/resources/ssl</directory>
 										</resource>
 										<resource>
-											<directory>src/main/resources/standalone-teiid/</directory>
+											<targetPath>${jboss.home}/standalone/configuration</targetPath>
+											<directory>src/main/resources/standalone-config/</directory>
 											<includes>
-												<include>standalone.xml</include>
+												<include>standalone-openshift.xml</include>
+											</includes>
+										</resource>
+											<resource>
+											<targetPath>${jboss.home}/bin</targetPath>
+											<directory>src/main/resources/eap-bin/</directory>
+											<includes>
+												<include>standalone.conf</include>
 											</includes>
 										</resource>
 										<resource>
