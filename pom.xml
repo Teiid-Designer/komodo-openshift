@@ -40,7 +40,7 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>teiid-os</module>
+		
 	</modules>
 
 </project>
