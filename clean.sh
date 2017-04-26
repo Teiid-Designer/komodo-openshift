@@ -39,9 +39,9 @@ echo "	--> delete all openshift resources"
 oc delete template datavirt63-secure-s2i || { echo "WARNING: Could not delete old application template" ; }
 oc delete is jboss-datagrid65-client-openshift  || { echo "WARNING: Could not delete old image" ; }
 oc delete is jboss-datavirt63-openshift || { echo "WARNING: Could not delete old image" ; }
-oc delete sa datavirt-service-account || { echo "WARNING: Could not delete old service account" ; }
-oc delete secret datavirt-app-secret || { echo "WARNING: Could not delete old secrets" ; }
-oc delete secret datavirt-app-config || { echo "WARNING: Could not delete old secrets" ; }
+oc delete sa dsb-service-account || { echo "WARNING: Could not delete old service account" ; }
+oc delete secret dsb-app-secret || { echo "WARNING: Could not delete old secrets" ; }
+oc delete secret dsb-app-config || { echo "WARNING: Could not delete old secrets" ; }
 oc delete all -l app=${OPENSHIFT_APPLICATION_NAME}  || { echo "WARNING: Could not delete old application resources" ; }
 
 echo "	--> delete project"

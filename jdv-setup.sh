@@ -13,7 +13,9 @@
 
 # OS settings
 DATAVIRT_REG_IMG='registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift'
-DATAGRID_REG_IMG='registry.access.redhat.com/jboss-datagrid-6/datagrid65-openshift'
+DATAVIRT_IMG='jboss-datavirt63-openshift'
+OS_TEMPLATE='dsb-datavirt63-secure-s2i'
+
 OPENSHIFT_PROJECT=dsb
 OPENSHIFT_APPLICATION_NAME=dsb-openshift
 OPENSHIFT_SERVICE_ACCOUNT=dsb-service-account
@@ -73,28 +75,16 @@ echo -e '\n\n=== Switching to the openshift project ==='
 oc project openshift
 
 echo -e '\n\n=== Creating the image stream for the OpenShift datavirt image ==='
-oc get is jboss-datavirt63-openshift || \
-	oc import-image jboss-datavirt63-openshift --from=${DATAVIRT_REG_IMG} --all --confirm || \
+oc get is ${DATAVIRT_IMG} || \
+	oc import-image ${DATAVIRT_IMG} --from=${DATAVIRT_REG_IMG} --all --confirm || \
 	{ echo "FAILED: Could not create datavirt 6.3 image stream" && exit 1; }
-{ oc get is jboss-datavirt63-openshift && \
-	oc tag --source=istag jboss-datavirt63-openshift:latest jboss-datavirt63-openshift:1.1 ; } || \
-	{ echo "FAILED: Could not tag the image to the correct version" && exit 1; }
-
-echo -e '\n\n=== Creating the image stream for the OpenShift datagrid image ==='
-oc get is jboss-datagrid65-openshift || \
-	oc import-image jboss-datagrid65-openshift --from=${DATAGRID_REG_IMG} --all --confirm || \
-	{ echo "FAILED: Could not create datagrid client 6.5 image stream" && exit 1; }
-
-#
-# Fixes a disparity in the datavirt template which references a datagrid65-client image
-#
-{ oc get is jboss-datagrid65-openshift && \
-	oc tag --source=istag jboss-datagrid65-openshift:latest jboss-datagrid65-client-openshift:1.0 ; } || \
+{ oc get is ${DATAVIRT_IMG} && \
+	oc tag --source=istag ${DATAVIRT_IMG}:latest ${DATAVIRT_IMG}:1.1 ; } || \
 	{ echo "FAILED: Could not tag the image to the correct version" && exit 1; }
 
 echo -e '\n\n=== Creating the s2i quickstart template. This will live in the openshift namespace and be available to all projects ==='
-oc get template datavirt63-secure-s2i 2>&1 > /dev/null || \
-	oc create -f datavirt63-secure-s2i.json || \
+oc get template ${OS_TEMPLATE} 2>&1 > /dev/null || \
+	oc create -f ${OS_TEMPLATE}.json || \
 	{ echo "FAILED: Could not create JDV application template" && exit 1; }
 
 echo -e '\n\n=== logging into oc tool as openshift-dev ==='
@@ -124,7 +114,7 @@ oc get sa/${OPENSHIFT_SERVICE_ACCOUNT} -o json | grep ${OPENSHIFT_APP_SECRET} 2>
 
 echo -e '\n\n=== Deploying JDV quickstart template with default values ==='
 oc get dc/dsb-app 2>&1 >/dev/null || \
-	oc new-app datavirt63-secure-s2i \
+	oc new-app ${OS_TEMPLATE} \
 		--param=APPLICATION_NAME=${OPENSHIFT_APPLICATION_NAME} \
 		--param=CONFIGURATION_NAME="${OPENSHIFT_APPLICATION_NAME}-config" \
 		--param=SOURCE_REPOSITORY_URL=${SOURCE_REPOSITORY_URL} \
@@ -139,7 +129,7 @@ oc get dc/dsb-app 2>&1 >/dev/null || \
 		--param=JGROUPS_ENCRYPT_SECRET=${OPENSHIFT_APP_SECRET} \
 		--param=JGROUPS_ENCRYPT_KEYSTORE=${JDV_SERVER_KEYSTORE_JGROUPS_ALIAS} \
 		--param=JGROUPS_ENCRYPT_PASSWORD=${JDV_SERVER_KEYSTORE_JGROUPS_PASSWORD} \
-		--param=CONTEXT_DIR=vdbs \
+        --param=CONTEXT_DIR=upload \
 		-l app=${OPENSHIFT_APPLICATION_NAME}
 
 #[ `oc get dc/dsb-app --template='{{(index .spec.template.spec.containers 0).resources.limits.memory}}{{printf "\n"}}'` == "1Gi" ] || \
@@ -162,4 +152,3 @@ echo "		--> (odata 4) http://dsb-app-${OPENSHIFT_PROJECT}.${OPENSHIFT_PRIMARY_AP
 echo "==============================================="
 
 echo "Done."
-
