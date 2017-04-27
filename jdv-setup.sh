@@ -131,7 +131,7 @@ oc get dc/${OPENSHIFT_APPLICATION_NAME} 2>&1 >/dev/null || \
 		--param=JGROUPS_ENCRYPT_KEYSTORE=${JDV_SERVER_KEYSTORE_JGROUPS} \
 		--param=JGROUPS_ENCRYPT_NAME=${JDV_SERVER_KEYSTORE_JGROUPS_ALIAS} \
 		--param=JGROUPS_ENCRYPT_PASSWORD=${JDV_SERVER_KEYSTORE_JGROUPS_PASSWORD} \
-        --param=CONTEXT_DIR=upload \
+        --param=CONTEXT_DIR=source \
 		-l app=${OPENSHIFT_APPLICATION_NAME}
 
 LIMIT=`oc get dc/${OPENSHIFT_APPLICATION_NAME} --template='{{(index .spec.template.spec.containers 0).resources.limits.memory}}{{printf "\n"}}'`
