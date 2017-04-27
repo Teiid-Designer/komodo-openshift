@@ -109,11 +109,12 @@ oc get sa/${OPENSHIFT_SERVICE_ACCOUNT} -o json | grep ${OPENSHIFT_APP_SECRET} 2>
 	oc secrets link ${OPENSHIFT_SERVICE_ACCOUNT} ${OPENSHIFT_APP_SECRET} || \
 	{ echo "FAILED: could not link secret to service account" && exit 1; }
 
-#echo -e '\n\n=== Retrieving datasource properties (market data flat file and country list web service hosted on public internet) ==='
-#{ [ -f datasources.properties ] || curl https://raw.githubusercontent.com/cvanball/jdv-ose-demo/master/extensions/datasources.properties -o datasources.properties ; } && { oc #secrets new dsb-app-config datasources.properties  || { echo "FAILED" && exit 1; } ; }
+echo -e '\n\n=== Adding datasource properties ==='
+oc get secret "${OPENSHIFT_APPLICATION_NAME}-config" 2>&1 > /dev/null || \
+    oc secrets new "${OPENSHIFT_APPLICATION_NAME}-config" datasources.properties  || { echo "FAILED" && exit 1; }
 
 echo -e '\n\n=== Deploying JDV quickstart template with default values ==='
-oc get dc/dsb-app 2>&1 >/dev/null || \
+oc get dc/${OPENSHIFT_APPLICATION_NAME} 2>&1 >/dev/null || \
 	oc new-app ${OS_TEMPLATE} \
 		--param=APPLICATION_NAME=${OPENSHIFT_APPLICATION_NAME} \
 		--param=CONFIGURATION_NAME="${OPENSHIFT_APPLICATION_NAME}-config" \
@@ -127,17 +128,24 @@ oc get dc/dsb-app 2>&1 >/dev/null || \
 		--param=TEIID_USERNAME=${TEIID_USERNAME} \
 		--param=TEIID_PASSWORD=${TEIID_PASSWORD} \
 		--param=JGROUPS_ENCRYPT_SECRET=${OPENSHIFT_APP_SECRET} \
-		--param=JGROUPS_ENCRYPT_KEYSTORE=${JDV_SERVER_KEYSTORE_JGROUPS_ALIAS} \
+		--param=JGROUPS_ENCRYPT_KEYSTORE=${JDV_SERVER_KEYSTORE_JGROUPS} \
+		--param=JGROUPS_ENCRYPT_NAME=${JDV_SERVER_KEYSTORE_JGROUPS_ALIAS} \
 		--param=JGROUPS_ENCRYPT_PASSWORD=${JDV_SERVER_KEYSTORE_JGROUPS_PASSWORD} \
         --param=CONTEXT_DIR=upload \
 		-l app=${OPENSHIFT_APPLICATION_NAME}
 
-#[ `oc get dc/dsb-app --template='{{(index .spec.template.spec.containers 0).resources.limits.memory}}{{printf "\n"}}'` == "1Gi" ] || \
-#	oc patch dc/dsb-app -p '{"spec" : { "template" : { "spec" : { "containers" : [ { "name" : "dsb-app", "resources" : { "limits" : { "cpu" : "1000m" , "memory" : "1024Mi" }, "requests" : { "cpu" : "500m"  , "memory" : "1024Mi" } } } ] } } } }' || \
-#	{ echo "FAILED: Could not set application resource limits" && exit 1; }
+LIMIT=`oc get dc/${OPENSHIFT_APPLICATION_NAME} --template='{{(index .spec.template.spec.containers 0).resources.limits.memory}}{{printf "\n"}}'`
+if [ "${LIMIT}" != "1Gi" ]; then
+    echo -e '\n\n=== Raising memory limit of image to 1GB ==='
+
+    SYNTAX='{ "spec" : { "template" : { "spec" : { "containers" : [ { "name" : "'${OPENSHIFT_APPLICATION_NAME}'", "resources" : { "limits" : { "cpu" : "1000m", "memory" : "1024Mi" }, "requests" : { "cpu" : "500m", "memory" : "1024Mi" } } } ] } } } }'
+
+	oc patch dc/${OPENSHIFT_APPLICATION_NAME} -p "${SYNTAX}" || \
+	{ echo "FAILED: Could not set application resource limits" && exit 1; }
+fi
 
 echo -e '\n\n=== verify the service is active'
-#curl -sS -k -u '${TEIID_USERNAME}:${TEIID_PASSWORD}'" http://dsb-app-${OPENSHIFT_PROJECT}"'/odata4/country-ws/country/Countries?$format=json' | jq -c -e -M --tab '.' | grep Zimbabwe || { echo "WARNING: failed to validate the service is available" ; }
+#curl -sS -k -u '${TEIID_USERNAME}:${TEIID_PASSWORD}'" http://${OPENSHIFT_APPLICATION_NAME}-${OPENSHIFT_PROJECT}"'/odata4/country-ws/country/Countries?$format=json' | jq -c -e -M --tab '.' | grep Zimbabwe || { echo "WARNING: failed to validate the service is available" ; }
 
 echo "==============================================="
 echo -e '\n\n=== Example data service access'
