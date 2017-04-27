@@ -39,29 +39,35 @@
 		</dependencies>
 	</dependencyManagement>
 
-    <dependency>
-		<groupId>org.komodo</groupId>
-		<artifactId>komodo-rest</artifactId>
-		<type>war</type>
-		<scope>compile</scope>
-	</dependency>
+    <dependencies>
+        <dependency>
+		      <groupId>org.komodo</groupId>
+		      <artifactId>komodo-rest</artifactId>
+		      <type>war</type>
+		      <scope>compile</scope>
+	   </dependency>
+    </dependencies>
 
     <build>
-		<finalName>${war.name}</finalName>
-
-		<plugins>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-
-					<!-- Need to use the same manifest since this is excluded by default -->
-					<archive>
-						<manifestFile>${project.build.directory}/war/work/org.komodo/komodo-rest/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                            <id>invoke build</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>bin/init-submodules.sh</executable>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
 </project>

@@ -1,0 +1,6 @@
+[submodule "source/komodo"]
+	path = source/komodo
+	url = https://github.com/Teiid-Designer/komodo.git
+[submodule "source/vdb-bench"]
+	path = source/vdb-bench
+	url = https://github.com/Teiid-Designer/vdb-bench.git
