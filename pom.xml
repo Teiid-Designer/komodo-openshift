@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jboss.integration-platform</groupId>
+		<artifactId>jboss-integration-platform-parent</artifactId>
+		<version>6.0.1.Final</version>
+	</parent>
+
+	<groupId>org.teiid</groupId>
+	<artifactId>komodo-openshift</artifactId>
+	<version>0.1.Final</version>
+	<packaging>pom</packaging>
+
+	<name>komodo openshift war archives</name>
+
+	<properties>
+		<version.komodo-rest>0.0.4-SNAPSHOT</version.komodo-rest>
+		<version.vdb-bench>0.1-SNAPSHOT</version.vdb-bench>
+		<jboss.home>/opt/eap</jboss.home>
+		<teiid.version>8.12.4</teiid.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.komodo</groupId>
+				<artifactId>komodo-rest</artifactId>
+				<version>${version.komodo-rest}</version>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>org.teiid</groupId>
+				<artifactId>vdb-bench-war</artifactId>
+				<version>${version.vdb-bench}</version>
+				<type>war</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+    <dependency>
+		<groupId>org.komodo</groupId>
+		<artifactId>komodo-rest</artifactId>
+		<type>war</type>
+		<scope>compile</scope>
+	</dependency>
+
+    <build>
+		<finalName>${war.name}</finalName>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+
+					<!-- Need to use the same manifest since this is excluded by default -->
+					<archive>
+						<manifestFile>${project.build.directory}/war/work/org.komodo/komodo-rest/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
