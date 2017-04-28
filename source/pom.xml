@@ -98,6 +98,7 @@
 	</build>
 
     <modules>
+        <module>teiid-modeshape</module>
         <module>komodo</module>
         <module>vdb-bench</module>
     </modules>

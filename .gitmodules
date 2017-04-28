@@ -4,3 +4,6 @@
 [submodule "source/vdb-bench"]
 	path = source/vdb-bench
 	url = https://github.com/Teiid-Designer/vdb-bench.git
+[submodule "source/teiid-modeshape"]
+	path = source/teiid-modeshape
+	url = https://github.com/Teiid-Designer/teiid-modeshape.git

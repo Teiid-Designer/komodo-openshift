@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BRANCH="dv-6.4.x"
-MODULES=(komodo vdb-bench)
+MODULES=(teiid-modeshape komodo vdb-bench)
 
 git submodule update --init
 git submodule foreach \
