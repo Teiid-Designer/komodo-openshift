@@ -1,8 +1,4 @@
-#!/bin/bash	
-# Configuration
-
-OPENSHIFT_PROJECT=dsb
-OPENSHIFT_APPLICATION_NAME=dsb-openshift
+#!/bin/bash
 
 #################
 #
@@ -14,6 +10,16 @@ function show_help {
 	echo "-h - ip|hostname of Openshift host"
   exit 1
 }
+
+if [ ! -f config.sh ]; then
+    echo "No config file found .. exiting"
+    exit 1
+fi
+
+#
+# Source the configuration
+#
+. ./config.sh
 
 #
 # Determine the command line options
@@ -32,19 +38,28 @@ if [ -z "$OS_HOST" ]; then
 fi
 
 echo -e '\n\n=== Logging into oc tool as admin ==='
-oc login https://$OS_HOST:8443 -u openshift-dev -p devel
+oc login https://$OS_HOST:8443 -u admin -p admin
 oc whoami 2>&1 > /dev/null || { echo "Cannot log in ... exiting" && exit 1; }
 
 echo "	--> delete all openshift resources"
-oc delete template datavirt63-secure-s2i || { echo "WARNING: Could not delete old application template" ; }
-oc delete is jboss-datagrid65-client-openshift  || { echo "WARNING: Could not delete old image" ; }
-oc delete is jboss-datavirt63-openshift || { echo "WARNING: Could not delete old image" ; }
-oc delete sa dsb-service-account || { echo "WARNING: Could not delete old service account" ; }
-oc delete secret dsb-app-secret || { echo "WARNING: Could not delete old secrets" ; }
-oc delete secret dsb-app-config || { echo "WARNING: Could not delete old secrets" ; }
+# Delete datavirt image
+#oc delete is ${DATAVIRT_IMG} || { echo "WARNING: Could not delete old image" ; }
+
+# Delete openshirt template
+oc delete template ${OS_TEMPLATE} || { echo "WARNING: Could not delete old application template" ; }
+
+# Delete service account
+oc delete sa ${OPENSHIFT_SERVICE_ACCOUNT} || { echo "WARNING: Could not delete old service account" ; }
+
+# Delete secrets
+oc delete secret ${OPENSHIFT_APP_SECRET} || { echo "WARNING: Could not delete old secrets" ; }
+oc delete secret "${OPENSHIFT_APPLICATION_NAME}-config" || { echo "WARNING: Could not delete old secrets" ; }
+
+# Delete application resources
 oc delete all -l app=${OPENSHIFT_APPLICATION_NAME}  || { echo "WARNING: Could not delete old application resources" ; }
 
-echo "	--> delete project"
+# Delete the project
 oc delete project ${OPENSHIFT_PROJECT}
+
 oc whoami ||  echo `oc whoami` "still logged in; use 'oc logout' to logout of openshift"
 echo "Done"
