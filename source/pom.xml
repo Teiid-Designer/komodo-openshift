@@ -20,6 +20,8 @@
 		<version.vdb-bench>0.1-SNAPSHOT</version.vdb-bench>
 		<jboss.home>/opt/eap</jboss.home>
 		<teiid.version>8.12.4</teiid.version>
+		<war.vdb-builder>komodo/server/komodo-rest/target/vdb-builder.war</war.vdb-builder>
+		<war.ds-builder>vdb-bench/vdb-bench-war/target/ds-builder.war</war.ds-builder>
 	</properties>
 
 	<dependencyManagement>
@@ -67,6 +69,31 @@
                     <executable>bin/init-submodules.sh</executable>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-wars-to-extensions</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/../extensions</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/${war.vdb-builder}</directory>
+                                    <include>vdb-builder.war</include>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/${war.ds-builder}</directory>
+                                    <include>ds-builder.war</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+			</plugin>
         </plugins>
 	</build>
 

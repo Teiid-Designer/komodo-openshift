@@ -525,6 +525,10 @@
                             {
                                 "name": "MAVEN_MIRROR_URL",
                                 "value": "${MAVEN_MIRROR_URL}"
+                            },
+                            {
+                                "name": "MAVEN_ARGS_APPEND",
+                                "value": "-Prelease -pl komodo/server/komodo-rest,vdb-bench/vdb-bench-war -am -Dskip.integrationTests"
                             }
                         ],
                         "forcePull": true,
