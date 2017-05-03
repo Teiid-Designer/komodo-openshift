@@ -566,10 +566,8 @@
                 "strategy": {
                     "type": "Source",
                     "sourceStrategy": {
-                        "incremental": true,
                         "from": {
                             "kind": "ImageStreamTag",
-                            "namespace": "${OPENSHIFT_PROJECT}",
                             "name": "jboss-datavirt63-openshift-git:latest"
                         },
                         "env": [
@@ -583,11 +581,15 @@
                             },
                             {
                                 "name": "MAVEN_ARGS_APPEND",
-                                "value": "-pl org.komodo.openshift:init,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-dataservice,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-ddl,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-vdb,org.komodo:komodo-rest,org.komodo.openshift:build -am -Dintegration.skipTests"
+                                "value": "-pl org.jboss.teiid.modeshape:teiid-modeshape-sequencer-dataservice,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-ddl,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-vdb,org.komodo:komodo-rest,org.teiid:vdb-bench-war,org.komodo.openshift:build -am -Dintegration.skipTests"
                             },
                             {
                                 "name": "MAVEN_MIRROR_URL",
                                 "value": "${MAVEN_MIRROR_URL}"
+                            },
+                            {
+                                "name": "GIT_DIR",
+                                "value": "${CONTEXT_DIR}"
                             }
                         ]
                     }
