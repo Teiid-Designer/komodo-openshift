@@ -1,14 +1,16 @@
 #!/bin/bash
 
-MSSEQPATH="teiid-modeshape/sequencers"
+MS_GROUP_ID="org.jboss.teiid.modeshape"
 
-MVN="mvn clean install -am -DskipTests -Dintegration.skipTests -pl "
+MVN="mvn clean install -Popenshift -am -DskipTests -Dintegration.skipTests -pl "
 
-MVN="${MVN}${MSSEQPATH}/teiid-modeshape-sequencer-dataservice," \
-MVN="${MVN}${MSSEQPATH}/teiid-modeshape-sequencer-ddl," \
-MVN="${MVN}${MSSEQPATH}/teiid-modeshape-sequencer-vdb," \
-MVN="${MVN}komodo/server/komodo-rest," \
-MVN="${MVN}vdb-bench/vdb-bench-war"
+MVN="${MVN}${MS_GROUP_ID}:teiid-modeshape-sequencer-dataservice," \
+MVN="${MVN}${MS_GROUP_ID}:teiid-modeshape-sequencer-ddl," \
+MVN="${MVN}${MS_GROUP_ID}:teiid-modeshape-sequencer-vdb," \
+MVN="${MVN}org.komodo:komodo-rest," \
+MVN="${MVN}org.komodo.openshift:build"
+
+#MVN="${MVN}vdb-bench/vdb-bench-war" \
 
 echo "Executing $MVN ..."
 

@@ -510,28 +510,23 @@
                 }
             },
             "spec": {
-                "source": {
+                "source": [
+                {
+                    "type": "Dockerfile",
+                    "dockerfile": "FROM centos:7\nRUN yum install -y git"
+                },
+                {
                     "type": "Git",
                     "git": {
                         "uri": "${SOURCE_REPOSITORY_URL}",
                         "ref": "${SOURCE_REPOSITORY_REF}"
                     },
                     "contextDir": "${CONTEXT_DIR}"
-                },
+                }],
                 "strategy": {
                     "type": "Source",
                     "sourceStrategy": {
-                        "env": [
-                            {
-                                "name": "MAVEN_MIRROR_URL",
-                                "value": "${MAVEN_MIRROR_URL}"
-                            },
-                            {
-                                "name": "MAVEN_ARGS_APPEND",
-                                "value": "-pl teiid-modeshape/sequencers/teiid-modeshape-sequencer-dataservice,teiid-modeshape/sequencers/teiid-modeshape-sequencer-ddl,teiid-modeshape/sequencers/teiid-modeshape-sequencer-vdb,komodo/server/komodo-rest,vdb-bench/vdb-bench-war -am -Dintegration.skipTests"
-                            }
-                        ],
-                        "forcePull": true,
+                        "incremental": true,
                         "from": {
                             "kind": "ImageStreamTag",
                             "namespace": "${IMAGE_STREAM_NAMESPACE}",
@@ -540,11 +535,19 @@
                         "env": [
                             {
                                 "name": "CUSTOM_INSTALL_DIRECTORIES",
-                                "value": "extensions/*"
+                                "value": "${CONTEXT_DIR}/extensions"
                             },
                             {
                                 "name": "VDB_DIRS",
                                 "value": "${VDB_DIRS}"
+                            },
+                            {
+                                "name": "MAVEN_ARGS_APPEND",
+                                "value": "-pl org.komodo.openshift:init,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-dataservice,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-ddl,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-vdb,org.komodo:komodo-rest,org.komodo.openshift:build -am -Dintegration.skipTests"
+                            },
+                            {
+                                "name": "MAVEN_MIRROR_URL",
+                                "value": "${MAVEN_MIRROR_URL}"
                             }
                         ]
                     }

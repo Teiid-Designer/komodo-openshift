@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jboss.integration-platform</groupId>
+		<artifactId>jboss-integration-platform-parent</artifactId>
+		<version>6.0.1.Final</version>
+	</parent>
+
+	<groupId>org.komodo.openshift</groupId>
+	<artifactId>build</artifactId>
+	<version>0.1.Final</version>
+	<packaging>pom</packaging>
+
+	<name>Komodo Openshift Build</name>
+
+	<properties>
+		<war.vdb-builder>komodo/server/komodo-rest/target/vdb-builder.war</war.vdb-builder>
+		<war.ds-builder>vdb-bench/vdb-bench-war/target/ds-builder.war</war.ds-builder>
+	</properties>
+
+    <profiles>
+        <profile>
+            <id>openshift</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <configuration>
+
+                                    <target>
+                                        <copy todir="${project.basedir}/../deployments" flatten="true">
+                                            <fileset dir="${project.basedir}/..">
+                                                <include name="**/vdb-builder.war"/>
+                                                <include name="**/ds-builder.war"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
+
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>../deployments</directory>
+                                    <includes>
+                                        <include>*.war</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                </plugins>
+        	</build>
+        </profile>
+    </profiles>
+
+</project>

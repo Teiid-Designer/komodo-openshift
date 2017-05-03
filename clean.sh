@@ -46,9 +46,11 @@ echo "	--> delete all openshift resources"
 #oc delete is ${DATAVIRT_IMG} || { echo "WARNING: Could not delete old image" ; }
 
 # Delete openshirt template
+oc project openshift
 oc delete template ${OS_TEMPLATE} || { echo "WARNING: Could not delete old application template" ; }
 
 # Delete service account
+oc project dsb
 oc delete sa ${OPENSHIFT_SERVICE_ACCOUNT} || { echo "WARNING: Could not delete old service account" ; }
 
 # Delete secrets

@@ -8,7 +8,7 @@
 		<version>6.0.1.Final</version>
 	</parent>
 
-	<groupId>org.teiid</groupId>
+	<groupId>org.komodo</groupId>
 	<artifactId>komodo-openshift</artifactId>
 	<version>0.1.Final</version>
 	<packaging>pom</packaging>
@@ -23,6 +23,12 @@
 		<war.vdb-builder>komodo/server/komodo-rest/target/vdb-builder.war</war.vdb-builder>
 		<war.ds-builder>vdb-bench/vdb-bench-war/target/ds-builder.war</war.ds-builder>
 	</properties>
+
+    <profiles>
+        <profile>
+            <id>openshift</id>
+        </profile>
+    </profiles>
 
 	<dependencyManagement>
 		<dependencies>
@@ -55,52 +61,31 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <inherited>false</inherited>
                 <version>1.1</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
-                            <id>invoke build</id>
+                        <id>init submodules</id>
                         <goals>
                             <goal>exec</goal>
                         </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <executable>bin/init-submodules.sh</executable>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-wars-to-extensions</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/../extensions</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/${war.vdb-builder}</directory>
-                                    <include>vdb-builder.war</include>
-                                </resource>
-                                <resource>
-                                    <directory>${basedir}/${war.ds-builder}</directory>
-                                    <include>ds-builder.war</include>
-                                </resource>
-                            </resources>
+                            <executable>bin/init-submodules.sh</executable>
                         </configuration>
                     </execution>
                 </executions>
-			</plugin>
+
+            </plugin>
         </plugins>
 	</build>
 
     <modules>
+        <module>init</module>
         <module>teiid-modeshape</module>
         <module>komodo</module>
         <module>vdb-bench</module>
+        <module>build</module>
     </modules>
 
 </project>
