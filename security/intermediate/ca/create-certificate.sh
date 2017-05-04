@@ -76,11 +76,11 @@ if [ -z "${ALIAS}" ]; then
 fi
 
 #
-# Check the alias
+# Check the keystore name
 #
 if [ -z "${KEYSTORE}" ]; then
   KEYSTORE=${DEFAULT_KEYSTORE}
-  echo "=== Keystore alias left as default: ${KEYSTORE} ==="
+  echo "=== Keystore filename left as default: ${KEYSTORE} ==="
 fi
 
 echo "=== Generating certificate (including its key, csr and p12 keystore) and importing it into a keystore ==="
@@ -88,6 +88,11 @@ echo "=== DOMAIN: ${DOMAIN} ==="
 echo "=== PASSWORD: ${PASSWORD} (used for key, p12 keystore and keystore) ==="
 echo "=== KEYSTORE NAME: ${KEYSTORE} ==="
 echo "=== KEYSTORE ALIAS: ${ALIAS} ==="
+
+#
+# Create newcerts directory if not already created
+#
+mkdir -p newcerts
 
 #
 # Create the domain key
