@@ -48,6 +48,19 @@ if [ -z "$OS_HOST" ]; then
   exit 1
 fi
 
+#
+# Check that we have a server keystore for https
+#
+if [ ! -f ${JDV_SERVER_KEYSTORE_DIR}/${JDV_SERVER_KEYSTORE_DEFAULT} ]; then
+    echo -e '\n\n === HTTPS keystore has not been generated. ==='
+    echo -e '\tNavigate to security/intermediate/ca.'
+    echo -e '\tExecute ./create-certificate.sh -d <domain>'
+    echo -e '\t\twhere domain is the name of the https route.'
+    echo -e '\t\t\tThis is in the format "secure-dsb-openshift-dsb.rhel-cdk.x.x.x.x.xip.io"'
+    echo -e '\t\t\twhere x.x.x.x is the ip address of the openshift instance, eg. 10.1.1.2'
+    exit 1
+fi
+
 echo -e '\n\n=== Logging into oc tool as admin ==='
 oc login https://${OS_HOST}:8443 -u admin -p admin
 oc whoami 2>&1 > /dev/null || { echo "Cannot log in ... exiting" && exit 1; }
