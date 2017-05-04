@@ -542,7 +542,33 @@
                         "kind": "ImageStreamTag",
                         "name": "jboss-datavirt63-openshift-git:latest"
                     }
-                }
+                },
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${GITHUB_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${GENERIC_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "jboss-datavirt63-openshift:1.1"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
             }
         },
         {
@@ -615,14 +641,10 @@
                     },
                     {
                         "type": "ImageChange",
-                        "imageChange": {}
-                    },
-                    {
-                        "type": "ImageChange",
                         "imageChange": {
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "jboss-datavirt63-openshift:1.1"
+                                "name": "jboss-datavirt63-openshift-git:latest"
                             }
                         }
                     },
