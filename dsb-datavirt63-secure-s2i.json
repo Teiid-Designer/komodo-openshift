@@ -722,6 +722,16 @@
                                         "readOnly": true
                                     }
                                 ],
+                                "resources" : {
+                                    "limits" : {
+                                        "cpu" : "2",
+                                        "memory" : "2Gi"
+                                    },
+                                    "requests" : {
+                                        "cpu" : "2",
+                                        "memory" : "2Gi"
+                                    }
+                                },
                                 "livenessProbe": {
                                     "exec": {
                                         "command": [

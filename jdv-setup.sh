@@ -128,16 +128,6 @@ oc get dc/${OPENSHIFT_APPLICATION_NAME} 2>&1 >/dev/null || \
         --param=CONTEXT_DIR=source \
 		-l app=${OPENSHIFT_APPLICATION_NAME}
 
-LIMIT=`oc get dc/${OPENSHIFT_APPLICATION_NAME} --template='{{(index .spec.template.spec.containers 0).resources.limits.memory}}{{printf "\n"}}'`
-if [ "${LIMIT}" != "1Gi" ]; then
-    echo -e '\n\n=== Raising memory limit of image to 1GB ==='
-
-    SYNTAX='{ "spec" : { "template" : { "spec" : { "containers" : [ { "name" : "'${OPENSHIFT_APPLICATION_NAME}'", "resources" : { "limits" : { "cpu" : "1000m", "memory" : "1024Mi" }, "requests" : { "cpu" : "500m", "memory" : "1024Mi" } } } ] } } } }'
-
-	oc patch dc/${OPENSHIFT_APPLICATION_NAME} -p "${SYNTAX}" || \
-	{ echo "FAILED: Could not set application resource limits" && exit 1; }
-fi
-
 echo -e '\n\n=== verify the service is active'
 #curl -sS -k -u '${TEIID_USERNAME}:${TEIID_PASSWORD}'" http://${OPENSHIFT_APPLICATION_NAME}-${OPENSHIFT_PROJECT}"'/odata4/country-ws/country/Countries?$format=json' | jq -c -e -M --tab '.' | grep Zimbabwe || { echo "WARNING: failed to validate the service is available" ; }
 
