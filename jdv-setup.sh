@@ -128,19 +128,10 @@ oc get dc/${OPENSHIFT_APPLICATION_NAME} 2>&1 >/dev/null || \
         --param=CONTEXT_DIR=source \
 		-l app=${OPENSHIFT_APPLICATION_NAME}
 
-echo -e '\n\n=== verify the service is active'
-#curl -sS -k -u '${TEIID_USERNAME}:${TEIID_PASSWORD}'" http://${OPENSHIFT_APPLICATION_NAME}-${OPENSHIFT_PROJECT}"'/odata4/country-ws/country/Countries?$format=json' | jq -c -e -M --tab '.' | grep Zimbabwe || { echo "WARNING: failed to validate the service is available" ; }
-
 echo "==============================================="
-echo -e '\n\n=== Example data service access'
-echo -e '\n\n=== 	The following urls will allow you to access the vdbs (of which there are two) via OData2 and OData4:'
-echo -e '\n\n=== 	by default, JDV secures odata sources with the standard teiid-security security domain.'
-echo -e '\n\n=== 	if prompted for username/password: username = teiidUser password = redhat1!'
-# reminder: for curl, use curl -u teiidUser:redhat1!
-echo "==============================================="
-echo "	--> Metadata for Country web service"
-echo "		--> (odata 2) http://dsb-app-${OPENSHIFT_PROJECT}.${OPENSHIFT_PRIMARY_APPS}"'/odata/country-ws/$metadata'
-echo "		--> (odata 4) http://dsb-app-${OPENSHIFT_PROJECT}.${OPENSHIFT_PRIMARY_APPS}"'/odata4/country-ws/country/$metadata'
+echo -e '\n\n=== Start the following builds:'
+echo -e '\n\n=== 	1. oc start-build jboss-datavirt63-openshift-git'
+echo -e '\n\n=== 	2. oc start-build dsb-openshift'
 echo "==============================================="
 
 echo "Done."

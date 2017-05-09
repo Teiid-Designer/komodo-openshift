@@ -7,6 +7,7 @@
 #################
 function show_help {
 	echo "Usage: $0 -h"
+	echo "-d - delete the project"
 	echo "-h - ip|hostname of Openshift host"
   exit 1
 }
@@ -27,6 +28,7 @@ fi
 while getopts "h:" opt;
 do
 	case $opt in
+	d) KILL_PROJECT=1 ;;
 	h) OS_HOST=$OPTARG ;;
 	*) show_help ;;
 	esac
@@ -61,7 +63,11 @@ oc delete secret "${OPENSHIFT_APPLICATION_NAME}-config" || { echo "WARNING: Coul
 oc delete all -l app=${OPENSHIFT_APPLICATION_NAME}  || { echo "WARNING: Could not delete old application resources" ; }
 
 # Delete the project
-oc delete project ${OPENSHIFT_PROJECT}
+if [ -n "${KILL_PROJECT}" ]; then
+	oc delete project ${OPENSHIFT_PROJECT}
+else
+	echo "== Skipping project deletion =="
+fi
 
 oc whoami ||  echo `oc whoami` "still logged in; use 'oc logout' to logout of openshift"
 echo "Done"

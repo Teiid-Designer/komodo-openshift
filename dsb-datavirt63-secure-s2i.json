@@ -511,6 +511,16 @@
             }
         },
         {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-komodo-rest",
+                "labels": {
+                    "application": "${APPLICATION_NAME}-komodo-rest"
+                }
+            }
+        },
+        {
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
@@ -575,6 +585,86 @@
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
+                "name": "${APPLICATION_NAME}-komodo-rest",
+                "labels": {
+                    "application": "${APPLICATION_NAME}-komodo-rest"
+                }
+            },
+            "spec": {
+                "source": {
+                    "type": "Git",
+                    "git": {
+                        "uri": "${SOURCE_REPOSITORY_URL}",
+                        "ref": "${SOURCE_REPOSITORY_REF}"
+                    },
+                    "contextDir": "${CONTEXT_DIR}"
+                },
+                "strategy": {
+                    "type": "Source",
+                    "sourceStrategy": {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "jboss-datavirt63-openshift-git:latest"
+                        },
+                        "incremental": true,
+                        "env": [
+                            {
+                                "name": "CUSTOM_INSTALL_DIRECTORIES",
+                                "value": "${CONTEXT_DIR}/extensions"
+                            },
+                            {
+                                "name": "MAVEN_ARGS_APPEND",
+                                "value": "-pl org.jboss.teiid.modeshape:teiid-modeshape-sequencer-dataservice,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-ddl,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-vdb,org.komodo:komodo-rest,org.komodo.openshift:build -am -Dintegration.skipTests"
+                            },
+                            {
+                                "name": "MAVEN_MIRROR_URL",
+                                "value": "${MAVEN_MIRROR_URL}"
+                            },
+                            {
+                                "name": "GIT_DIR",
+                                "value": "${CONTEXT_DIR}"
+                            }
+                        ]
+                    }
+                },
+                "output": {
+                    "to": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}-komodo-rest:latest"
+                    }
+                },
+                "triggers": [
+                    {
+                        "type": "GitHub",
+                        "github": {
+                            "secret": "${GITHUB_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "Generic",
+                        "generic": {
+                            "secret": "${GENERIC_WEBHOOK_SECRET}"
+                        }
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChange": {
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "jboss-datavirt63-openshift-git:latest"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "BuildConfig",
+            "apiVersion": "v1",
+            "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
                     "application": "${APPLICATION_NAME}"
@@ -594,8 +684,9 @@
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "jboss-datavirt63-openshift-git:latest"
+                            "name": "${APPLICATION_NAME}-komodo-rest:latest"
                         },
+                        "incremental": true,
                         "env": [
                             {
                                 "name": "CUSTOM_INSTALL_DIRECTORIES",
@@ -607,7 +698,7 @@
                             },
                             {
                                 "name": "MAVEN_ARGS_APPEND",
-                                "value": "-pl org.jboss.teiid.modeshape:teiid-modeshape-sequencer-dataservice,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-ddl,org.jboss.teiid.modeshape:teiid-modeshape-sequencer-vdb,org.komodo:komodo-rest,org.teiid:vdb-bench-war,org.komodo.openshift:build -am -Dintegration.skipTests"
+                                "value": "-pl org.teiid:vdb-bench-war,org.komodo.openshift:build -am -Dintegration.skipTests"
                             },
                             {
                                 "name": "MAVEN_MIRROR_URL",
@@ -644,7 +735,7 @@
                         "imageChange": {
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "jboss-datavirt63-openshift-git:latest"
+                                "name": "${APPLICATION_NAME}-komodo-rest:latest"
                             }
                         }
                     },
@@ -723,13 +814,13 @@
                                     }
                                 ],
                                 "resources" : {
-                                    "limits" : {
-                                        "cpu" : "2",
-                                        "memory" : "2Gi"
-                                    },
                                     "requests" : {
-                                        "cpu" : "2",
-                                        "memory" : "2Gi"
+                                        "cpu" : "500m",
+                                        "memory" : "1536Mi"
+                                    },
+                                    "limits" : {
+                                        "cpu" : "1",
+                                        "memory" : "1536Mi"
                                     }
                                 },
                                 "livenessProbe": {
@@ -861,7 +952,7 @@
                                     },
                                     {
                                         "name": "ENV_FILES",
-                                        "value": "/etc/dsb-environment/*"
+                                        "value": "/etc/dsb-environment/datasources.properties"
                                     },
                                     {
                                         "name": "DATAVIRT_TRANSPORT_KEYSTORE",
