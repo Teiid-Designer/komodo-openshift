@@ -28,3 +28,8 @@ JDV_SERVER_KEYSTORE_JGROUPS_PASSWORD=password
 # Teiid credentials
 TEIID_USERNAME=user
 TEIID_PASSWORD=user1234!
+
+# Mysql Datasource
+DS1_DATABASE=usstates
+DS1_USERNAME=admin
+DS1_PASSWORD=admin

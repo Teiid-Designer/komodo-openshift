@@ -126,6 +126,9 @@ oc get dc/${OPENSHIFT_APPLICATION_NAME} 2>&1 >/dev/null || \
 		--param=JGROUPS_ENCRYPT_NAME=${JDV_SERVER_KEYSTORE_JGROUPS_ALIAS} \
 		--param=JGROUPS_ENCRYPT_PASSWORD=${JDV_SERVER_KEYSTORE_JGROUPS_PASSWORD} \
         --param=CONTEXT_DIR=source \
+        --param=DS1_DATABASE=${DS1_DATABASE} \
+        --param=DS1_USERNAME=${DS1_USERNAME} \
+        --param=DS1_PASSWORD=${DS1_PASSWORD} \
 		-l app=${OPENSHIFT_APPLICATION_NAME}
 
 echo "==============================================="

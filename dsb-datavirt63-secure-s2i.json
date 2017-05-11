@@ -132,6 +132,27 @@
             "required": true
         },
         {
+            "description": "Data source 1 database name.",
+            "displayName": "Data Source 1 Name",
+            "name": "DS1_DATABASE",
+            "value": "usstates",
+            "required": false
+        },
+        {
+            "description": "Data source 1 database user.",
+            "displayName": "Data Source 1 User",
+            "name": "DS1_USERNAME",
+            "value": "admin",
+            "required": false
+        },
+        {
+            "description": "Data source 1 database password.",
+            "displayName": "Data Source 1 password",
+            "name": "DS1_PASSWORD",
+            "value": "admin",
+            "required": false
+        },
+        {
             "description": "Username associated with ModeShape.",
             "displayName": "ModeShape Username",
             "name": "MODESHAPE_USERNAME",
@@ -416,6 +437,30 @@
             }
         },
         {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "spec": {
+                "ports": [
+                    {
+                        "port": 3306,
+                        "targetPort": 3306
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-mysql"
+                }
+            },
+            "metadata": {
+                "name": "${APPLICATION_NAME}-mysql",
+                "labels": {
+                    "application": "${APPLICATION_NAME}-mysql"
+                },
+                "annotations": {
+                    "description": "The database server's port."
+                }
+            }
+        },
+        {
             "kind": "Route",
             "apiVersion": "v1",
             "id": "${APPLICATION_NAME}-http",
@@ -518,6 +563,28 @@
                 "labels": {
                     "application": "${APPLICATION_NAME}-komodo-rest"
                 }
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-mysql",
+                "labels": {
+                    "application": "${APPLICATION_NAME}-mysql"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "type": "Docker",
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "teiidkomodo/mysql-openshift:latest"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -749,6 +816,104 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
+                "name": "${APPLICATION_NAME}-mysql",
+                "labels": {
+                    "application": "${APPLICATION_NAME}-mysql"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling"
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${APPLICATION_NAME}-mysql"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "${APPLICATION_NAME}-mysql:latest"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-mysql"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}-mysql",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}-mysql",
+                            "application": "${APPLICATION_NAME}-mysql"
+                        }
+                    },
+                    "spec": {
+                        "terminationGracePeriodSeconds": "60",
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}-mysql",
+                                "image": "${APPLICATION_NAME}-mysql",
+                                "imagePullPolicy": "Always",
+                                "volumeMounts": [
+                                    {
+                                        "name": "${APPLICATION_NAME}-mysql-1",
+                                        "mountPath": "/var/lib/mysql/data"
+                                    }
+                                ],
+                                "resources" : {
+                                    "limits" : {
+                                        "cpu" : "1",
+                                        "memory" : "500Mi"
+                                    }
+                                },
+                                "ports": [
+                                    {
+                                        "name": "mysql",
+                                        "containerPort": 3306,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "MYSQL_ROOT_PASSWORD",
+                                        "value": "password"
+                                    },
+                                    {
+                                        "name": "MYSQL_USER",
+                                        "value": "${DS1_USERNAME}"
+                                    },
+                                    {
+                                        "name": "MYSQL_PASSWORD",
+                                        "value": "${DS1_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "MYSQL_DATABASE",
+                                        "value": "${DS1_DATABASE}"
+                                    }
+                                ]
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "${APPLICATION_NAME}-mysql-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
                     "application": "${APPLICATION_NAME}"
@@ -949,6 +1114,26 @@
                                     {
                                         "name": "MODESHAPE_PASSWORD",
                                         "value": "${MODESHAPE_PASSWORD}"
+                                    },
+                                    {
+                                        "name": "DS1_SERVICE_HOST",
+                                        "value": "${APPLICATION_NAME}-mysql"
+                                    },
+                                    {
+                                        "name": "DS1_SERVICE_PORT",
+                                        "value": "3306"
+                                    },
+                                    {
+                                        "name": "DS1_DATABASE",
+                                        "value": "${DS1_DATABASE}"
+                                    },
+                                    {
+                                        "name": "DS1_USERNAME",
+                                        "value": "${DS1_USERNAME}"
+                                    },
+                                    {
+                                        "name": "DS1_PASSWORD",
+                                        "value": "${DS1_PASSWORD}"
                                     },
                                     {
                                         "name": "ENV_FILES",
